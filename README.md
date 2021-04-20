@@ -1,3 +1,3 @@
 # Git Test Dev
 
-테스트
+Test Project for Git
