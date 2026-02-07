@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-02-07T03:14:35.450Z",
+  "lastUpdated": "2026-02-07T03:24:27.688Z",
   "activeFeatures": [
     "website-screenshot",
     "screenshot-api",
@@ -14,7 +14,9 @@
     "worker",
     "scripts",
     "callback-dummy",
-    "test-website"
+    "test-website",
+    "__tests__",
+    "api"
   ],
   "primaryFeature": "website-screenshot",
   "features": {
@@ -54,9 +56,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-07T02:04:19.528Z",
-        "lastUpdated": "2026-02-07T03:14:35.450Z"
+        "lastUpdated": "2026-02-07T03:20:14.220Z"
       },
-      "lastFile": "/Users/tj/hello/screenshot-api/src/app/page.tsx"
+      "lastFile": "/Users/tj/hello/screenshot-api/jest.setup.js"
     },
     "db": {
       "phase": "do",
@@ -80,9 +82,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-07T02:05:09.453Z",
-        "lastUpdated": "2026-02-07T02:05:09.453Z"
+        "lastUpdated": "2026-02-07T03:20:57.168Z"
       },
-      "lastFile": "/Users/tj/hello/screenshot-api/src/lib/validation/schemas.ts"
+      "lastFile": "/Users/tj/hello/screenshot-api/src/__tests__/validation/schemas.test.ts"
     },
     "queue": {
       "phase": "do",
@@ -93,9 +95,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-07T02:05:28.017Z",
-        "lastUpdated": "2026-02-07T02:43:09.766Z"
+        "lastUpdated": "2026-02-07T03:21:29.506Z"
       },
-      "lastFile": "/Users/tj/hello/screenshot-api/src/lib/queue/simple-queue.ts"
+      "lastFile": "/Users/tj/hello/screenshot-api/src/__tests__/queue/simple-queue.test.ts"
     },
     "screenshot": {
       "phase": "do",
@@ -200,6 +202,32 @@
         "lastUpdated": "2026-02-07T03:14:29.287Z"
       },
       "lastFile": "/Users/tj/hello/test-website/postcss.config.js"
+    },
+    "__tests__": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-07T03:20:57.330Z",
+        "lastUpdated": "2026-02-07T03:24:27.688Z"
+      },
+      "lastFile": "/Users/tj/hello/screenshot-api/src/__tests__/utils/callback-sender.test.ts"
+    },
+    "api": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-07T03:21:57.988Z",
+        "lastUpdated": "2026-02-07T03:21:57.988Z"
+      },
+      "lastFile": "/Users/tj/hello/screenshot-api/src/__tests__/api/screenshot.test.ts"
     }
   },
   "pipeline": {
@@ -210,7 +238,7 @@
   "session": {
     "startedAt": "2026-02-06T05:52:39.462Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-02-07T03:14:35.450Z"
+    "lastActivity": "2026-02-07T03:24:27.688Z"
   },
   "history": [
     {
@@ -498,6 +526,66 @@
     {
       "timestamp": "2026-02-07T03:14:35.450Z",
       "feature": "screenshot-api",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:20:14.055Z",
+      "feature": "screenshot-api",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:20:14.220Z",
+      "feature": "screenshot-api",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:20:57.168Z",
+      "feature": "validation",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:20:57.330Z",
+      "feature": "__tests__",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:21:29.506Z",
+      "feature": "queue",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:21:57.988Z",
+      "feature": "api",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:21:58.161Z",
+      "feature": "__tests__",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:23:38.523Z",
+      "feature": "__tests__",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:24:01.440Z",
+      "feature": "__tests__",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:24:27.688Z",
+      "feature": "__tests__",
       "phase": "do",
       "action": "updated"
     }

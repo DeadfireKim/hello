@@ -281,23 +281,46 @@ npm run dev
 
 ## 📡 API 엔드포인트
 
-### POST /api/screenshot
+| Method | Endpoint | 설명 | 인증 | Rate Limit |
+|--------|----------|------|------|------------|
+| POST | `/api/screenshot` | 스크린샷 작업 생성 | 불필요 | 10회/분 |
+| GET | `/api/screenshot/:jobId` | 작업 상태 조회 | 불필요 | 제한없음 |
+| GET | `/api/health` | 헬스 체크 | 불필요 | 제한없음 |
 
-스크린샷 작업을 생성합니다.
+### 📝 상세 사용법
 
-**요청:**
+#### 1. POST /api/screenshot
 
+스크린샷 작업을 생성하고 비동기로 처리합니다.
+
+**필수 파라미터:**
+- `targetUrl` (string): 스크린샷을 캡처할 웹사이트 URL
+- `callbackUrl` (string): 결과를 받을 Webhook URL
+
+**선택적 파라미터:**
+- `options.viewport.width` (number): 뷰포트 너비 (기본: 1920, 범위: 320-3840)
+- `options.viewport.height` (number): 뷰포트 높이 (기본: 1080, 범위: 240-2160)
+- `options.fullPage` (boolean): 전체 페이지 캡처 여부 (기본: true)
+- `options.format` (string): 이미지 형식 - `png`, `jpeg`, `webp` (기본: png)
+- `options.quality` (number): 이미지 품질 (기본: 80, 범위: 1-100)
+
+**요청 예시:**
 \`\`\`bash
 curl -X POST http://localhost:3000/api/screenshot \\
   -H "Content-Type: application/json" \\
   -d '{
     "targetUrl": "https://example.com",
-    "callbackUrl": "https://your-service.com/webhook"
+    "callbackUrl": "https://your-service.com/webhook",
+    "options": {
+      "viewport": { "width": 1920, "height": 1080 },
+      "fullPage": true,
+      "format": "png",
+      "quality": 80
+    }
   }'
 \`\`\`
 
 **응답 (202 Accepted):**
-
 \`\`\`json
 {
   "success": true,
@@ -309,36 +332,19 @@ curl -X POST http://localhost:3000/api/screenshot \\
 }
 \`\`\`
 
-**선택적 파라미터:**
+#### 2. GET /api/screenshot/:jobId
 
-\`\`\`json
-{
-  "targetUrl": "https://example.com",
-  "callbackUrl": "https://your-service.com/webhook",
-  "options": {
-    "viewport": {
-      "width": 1920,
-      "height": 1080
-    },
-    "fullPage": true,
-    "format": "png",
-    "quality": 80
-  }
-}
-\`\`\`
+작업의 현재 상태와 결과를 조회합니다.
 
-### GET /api/screenshot/:jobId
+**Path 파라미터:**
+- `jobId` (string): 작업 ID (POST 요청에서 받은 ID)
 
-작업 상태를 조회합니다.
-
-**요청:**
-
+**요청 예시:**
 \`\`\`bash
 curl http://localhost:3000/api/screenshot/550e8400-e29b-41d4-a716-446655440000
 \`\`\`
 
-**응답:**
-
+**응답 (완료 시):**
 \`\`\`json
 {
   "jobId": "550e8400-e29b-41d4-a716-446655440000",
@@ -356,12 +362,28 @@ curl http://localhost:3000/api/screenshot/550e8400-e29b-41d4-a716-446655440000
 }
 \`\`\`
 
-### GET /api/health
+**상태 값:**
+- `pending`: 대기 중
+- `active`: 처리 중
+- `completed`: 완료
+- `failed`: 실패
 
-헬스 체크 엔드포인트입니다.
+#### 3. GET /api/health
 
+API 서버의 상태를 확인합니다.
+
+**요청 예시:**
 \`\`\`bash
 curl http://localhost:3000/api/health
+\`\`\`
+
+**응답:**
+\`\`\`json
+{
+  "status": "ok",
+  "timestamp": "2026-02-07T10:00:00Z",
+  "uptime": 3600
+}
 \`\`\`
 
 ## 🪝 Webhook 콜백

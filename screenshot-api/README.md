@@ -38,4 +38,42 @@ npm start
 
 ## 🧪 테스트
 
-테스트 웹 UI를 사용하려면 [test-website](../test-website/README.md) 프로젝트를 참고하세요.
+### 단위 테스트 및 통합 테스트
+
+프로젝트에는 Jest를 사용한 포괄적인 테스트 스위트가 포함되어 있습니다.
+
+```bash
+# 모든 테스트 실행
+npm test
+
+# 워치 모드로 테스트 (개발 중)
+npm run test:watch
+
+# 커버리지 리포트 생성
+npm run test:coverage
+```
+
+**테스트 커버리지:**
+- ✅ Validation schemas (Zod)
+- ✅ Simple Queue (in-memory job queue)
+- ✅ Rate Limiter
+- ✅ Callback Sender
+- ✅ API endpoints (unit tests)
+
+**테스트 구조:**
+```
+src/__tests__/
+├── validation/
+│   └── schemas.test.ts        # 요청 검증 테스트
+├── queue/
+│   └── simple-queue.test.ts   # 작업 큐 테스트
+├── utils/
+│   ├── simple-rate-limiter.test.ts  # Rate limiting 테스트
+│   └── callback-sender.test.ts      # Webhook 콜백 테스트
+└── api/
+    └── screenshot.test.ts     # API 엔드포인트 테스트
+```
+
+### 테스트 웹 UI
+
+실제 스크린샷 API를 테스트하려면 [test-website](../test-website/README.md) 프로젝트를 참고하세요.
