@@ -85,52 +85,56 @@ npm run dev
 
 ## 📖 빠른 시작
 
-### 1. 저장소 클론
+> 💡 **개발 환경에서는 기본 설정으로 바로 실행 가능합니다!** 별도 설정 없이 Node.js만 있으면 됩니다.
 
-\`\`\`bash
+### 1️⃣ 저장소 클론
+
+```bash
 git clone https://github.com/DeadfireKim/WebScreenShot.git
 cd WebScreenShot
-\`\`\`
+```
 
-### 2. API 서버 설치 및 실행
+### 2️⃣ API 서버 실행
 
-\`\`\`bash
+```bash
 cd screenshot-api
 npm install
 npm run dev
-\`\`\`
+```
 
-API 서버가 [http://localhost:3000](http://localhost:3000)에서 실행됩니다.
+✅ API 서버: http://localhost:3000
 
-### 3. 테스트 웹사이트 실행 (선택사항)
+<details>
+<summary><b>📱 테스트 웹사이트 실행 (선택사항)</b></summary>
 
 새 터미널을 열고:
 
-\`\`\`bash
+```bash
 cd test-website
 npm install
 npm run dev
-\`\`\`
+```
 
-테스트 UI가 [http://localhost:3001](http://localhost:3001)에서 실행됩니다.
+✅ 테스트 UI: http://localhost:3001
 
-### 2. 환경 변수 설정
+</details>
 
-\`.env.example\`을 \`.env.local\`로 복사:
+### 3️⃣ 환경 변수 설정 (선택사항)
 
-\`\`\`bash
+<details>
+<summary><b>⚙️ 프로덕션 환경 설정</b></summary>
+
+`.env.example`을 `.env.local`로 복사:
+
+```bash
+cd screenshot-api
 cp .env.example .env.local
-\`\`\`
+```
 
-**개발 환경에서는 기본 설정 그대로 사용하면 됩니다!**
-별도 수정 없이 바로 실행 가능하며, 스크린샷은 \`public/screenshots/\` 디렉토리에 저장됩니다.
+**클라우드 스토리지 설정 (S3/R2):**
 
-#### 프로덕션 환경 설정 (선택 사항)
-
-클라우드 스토리지를 사용하려면 \`.env.local\` 파일을 수정하세요:
-
-\`\`\`bash
-# Storage (Cloudflare R2 or AWS S3) - 프로덕션용
+```bash
+# Storage (Cloudflare R2 or AWS S3)
 S3_BUCKET=your-bucket-name
 S3_REGION=auto
 S3_ACCESS_KEY_ID=your_access_key
@@ -139,114 +143,96 @@ S3_ENDPOINT=https://your-account.r2.cloudflarestorage.com
 
 # Application
 NEXT_PUBLIC_API_URL=http://localhost:3000
-NODE_ENV=development
 PORT=3000
 
 # Worker
 WORKER_CONCURRENCY=5
-\`\`\`
+```
 
-> **📌 저장 위치 자동 선택**:
-> - **개발 모드** (S3 설정 없음): \`public/screenshots/\` 디렉토리에 로컬 저장
-> - **프로덕션 모드** (S3 설정 있음): S3/R2 클라우드 스토리지에 저장
+**📌 저장 위치 자동 선택:**
+- **개발 모드**: `public/screenshots/` (로컬)
+- **프로덕션 모드**: S3/R2 (클라우드)
 
-### 3. 서비스 실행
+</details>
 
-서비스는 두 가지 배포 모드를 지원합니다:
+---
 
-#### 🟢 **통합 모드 (개발 환경 권장)**
+## 🚀 배포 모드
 
-API 서버와 워커가 동일한 프로세스에서 실행됩니다. API가 첫 번째 스크린샷 요청을 받으면 워커가 자동으로 시작됩니다.
+### 🎯 모드 비교
 
-\`\`\`bash
+| 항목 | 🟢 통합 모드 | 🔵 독립 워커 모드 |
+|------|-------------|----------------|
+| **명령어** | `npm run dev` | `npm run start:all` |
+| **설정** | 불필요 | Redis 필요 |
+| **의존성** | Node.js만 | Node.js + Redis |
+| **작업 영속성** | ❌ 재시작 시 손실 | ✅ Redis에 저장 |
+| **확장성** | ❌ 단일 서버 | ✅ 수평 확장 가능 |
+| **권장 환경** | 개발/테스트 | 프로덕션 |
+
+### 🟢 통합 모드 (개발 환경 권장)
+
+```bash
+cd screenshot-api
 npm run dev
-\`\`\`
+```
 
-[http://localhost:3000](http://localhost:3000) 접속
+✅ **특징:**
+- 단일 명령어로 실행
+- 별도 설정 불필요
+- 첫 요청 시 워커 자동 시작
 
-**장점:**
-- ✅ 간단한 설정 - 단일 명령어
-- ✅ 설정 불필요
-- ✅ 개발 및 테스트에 최적
-- ✅ 인터랙티브 테스트 UI 포함
+<details>
+<summary><b>🔵 독립 워커 모드 (프로덕션)</b></summary>
 
-**트레이드오프:**
-- ⚠️ 서버 재시작 시 작업 손실
-- ⚠️ 수평 확장 불가
+Redis를 사용하여 API와 워커를 별도 프로세스로 실행합니다.
 
-#### 🔵 **독립 워커 모드 (프로덕션/분산 환경용)**
+**1. Redis 설치:**
 
-스크린샷 워커를 별도의 데몬 프로세스로 실행합니다. 작업 큐 통신을 위해 Redis가 필요합니다.
+```bash
+# macOS
+brew install redis && brew services start redis
 
-**사전 요구사항:**
-- Redis 서버 실행 중
-- API와 Worker 간 공유 Redis 연결
+# Ubuntu/Debian
+sudo apt-get install redis-server && sudo systemctl start redis
 
-**설정 방법:**
+# Docker
+docker run -d -p 6379:6379 redis:alpine
+```
 
-1. **Redis 설치** (미설치 시):
-   \`\`\`bash
-   # macOS
-   brew install redis
-   brew services start redis
+**2. 환경 변수 설정:**
 
-   # Ubuntu/Debian
-   sudo apt-get install redis-server
-   sudo systemctl start redis
+```bash
+# .env.local
+REDIS_URL=redis://localhost:6379
+```
 
-   # Docker
-   docker run -d -p 6379:6379 redis:alpine
-   \`\`\`
+**3. 큐 구현 교체:**
 
-2. **\`.env.local\` 업데이트** - Redis 사용:
-   \`\`\`bash
-   REDIS_URL=redis://localhost:6379
-   \`\`\`
+`simple-queue.ts`를 Bull Queue + Redis로 교체
+(상세: `docs/02-design/features/website-screenshot.design.md`)
 
-3. **큐 구현 수정**:
+**4. 서비스 실행:**
 
-   \`simple-queue.ts\`를 Bull Queue + Redis 구현으로 교체합니다.
-   (\`docs/02-design/features/website-screenshot.design.md\`에서 원본 설계 참고)
+```bash
+# 방법 1: 동시 실행
+npm run start:all
 
-4. **서비스 실행**:
+# 방법 2: 개별 실행
+# 터미널 1
+npm run dev
 
-   **터미널 1: API 서버**
-   \`\`\`bash
-   npm run dev
-   \`\`\`
+# 터미널 2
+npm run worker
+```
 
-   **터미널 2: 워커 데몬**
-   \`\`\`bash
-   npm run worker
-   \`\`\`
+**사용 시기:**
+- ✅ 프로덕션 배포
+- ✅ 대량 스크린샷 처리
+- ✅ 작업 영속성 필요
+- ✅ 수평 확장 필요
 
-   또는 함께 실행:
-   \`\`\`bash
-   npm run start:all
-   \`\`\`
-
-**장점:**
-- ✅ 재시작 시에도 작업 유지 (Redis에 저장)
-- ✅ 수평 확장 (여러 워커)
-- ✅ 워커를 별도 서버에서 실행 가능
-- ✅ 프로덕션 워크로드에 적합
-
-**독립 모드 사용 시기:**
-- 프로덕션 배포
-- 대량 스크린샷 생성
-- 작업 영속성 필요
-- 분산 아키텍처
-
-#### 🎯 빠른 비교
-
-| 기능 | 통합 모드 | 독립 모드 |
-|---------|----------------|-----------------|
-| 설정 복잡도 | 간단 (1개 명령어) | 복잡 (Redis + 다중 프로세스) |
-| 작업 영속성 | ❌ 재시작 시 손실 | ✅ Redis에 저장 |
-| 수평 확장 | ❌ 단일 인스턴스 | ✅ 다중 워커 |
-| 개발 환경 | ✅ 권장 | ⚠️ 과도함 |
-| 프로덕션 | ⚠️ 제한적 규모 | ✅ 권장 |
-| 의존성 | Node.js만 | Node.js + Redis |
+</details>
 
 ## 💾 스토리지 설정
 
