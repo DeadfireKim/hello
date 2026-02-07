@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git push:*)",
+      "Bash(npx create-next-app@latest screenshot-api --typescript --tailwind --app --src-dir --import-alias \"@/*\" --eslint --no-git --skip-install)"
+    ]
+  }
+}
