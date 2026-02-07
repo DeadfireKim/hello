@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getJobStatus } from '@/lib/queue/screenshot-queue';
+import { getJobStatus } from '@/lib/queue/simple-queue';
 import { JobStatusResponse } from '@/lib/types';
 
 export async function GET(
@@ -25,13 +25,12 @@ export async function GET(
       );
     }
 
-    // Map Bull job state to our status
+    // Map job state to our status
     const statusMap: Record<string, 'pending' | 'processing' | 'completed' | 'failed'> = {
-      waiting: 'pending',
+      pending: 'pending',
       active: 'processing',
       completed: 'completed',
       failed: 'failed',
-      delayed: 'pending',
     };
 
     const status = statusMap[job.status] || 'pending';

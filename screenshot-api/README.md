@@ -16,16 +16,23 @@ A RESTful API service that captures full-page screenshots of websites and sends 
 ## 📦 Tech Stack
 
 - **API**: Next.js 15 API Routes
-- **Queue**: Bull + Redis
+- **Queue**: In-Memory Simple Queue (No Redis!)
 - **Screenshot**: Puppeteer (Headless Chrome)
 - **Image Processing**: Sharp
 - **Storage**: AWS S3 / Cloudflare R2
 
+### ✨ Simplified Architecture
+- ✅ **No Redis Required** - Uses in-memory queue
+- ✅ **Single Server** - API + Worker in one process
+- ✅ **Easy Setup** - Just Node.js needed
+- ⚠️ **Trade-off**: Jobs lost on server restart
+
 ## 🔧 Prerequisites
 
 - Node.js 20+
-- Redis (running locally or remote)
 - AWS S3 or Cloudflare R2 account (for image storage)
+
+**That's it!** No Redis, no additional services needed.
 
 ## 📖 Installation
 
@@ -59,17 +66,7 @@ S3_SECRET_ACCESS_KEY=your_secret_key
 S3_ENDPOINT=https://your-account.r2.cloudflarestorage.com
 \`\`\`
 
-### 3. Start Redis
-
-\`\`\`bash
-# Using Docker
-docker run -d -p 6379:6379 redis:alpine
-
-# Or using Homebrew (macOS)
-brew services start redis
-\`\`\`
-
-### 4. Run Development Server
+### 3. Run Development Server
 
 **Terminal 1: API Server**
 

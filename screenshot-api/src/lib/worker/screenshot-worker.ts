@@ -1,6 +1,5 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
-import { Job } from 'bull';
-import screenshotQueue from '@/lib/queue/screenshot-queue';
+import screenshotQueue from '@/lib/queue/simple-queue';
 import { ScreenshotJobData, JobResult } from '@/lib/types';
 import { puppeteerConfig, navigationOptions } from '@/lib/config/puppeteer';
 import { optimizeImage, getImageMetadata } from './image-optimizer';
@@ -33,33 +32,33 @@ class ScreenshotWorker {
     }
   }
 
-  async processJob(job: Job<ScreenshotJobData>): Promise<JobResult> {
+  async processJob(job: any): Promise<JobResult> {
     const { id, targetUrl, callbackUrl, options } = job.data;
 
     console.log(`📸 Processing job ${id}: ${targetUrl}`);
 
     try {
       // Update progress
-      await job.progress(10);
+      await screenshotQueue.updateProgress(id, 10);
 
       // 1. Capture screenshot
       const screenshotBuffer = await this.captureScreenshot(targetUrl, options);
-      await job.progress(40);
+      await screenshotQueue.updateProgress(id, 40);
 
       // 2. Optimize image
       const { buffer: optimizedBuffer, format } = await optimizeImage(screenshotBuffer, {
         format: options?.format,
         quality: options?.quality,
       });
-      await job.progress(60);
+      await screenshotQueue.updateProgress(id, 60);
 
       // 3. Get image metadata
       const metadata = await getImageMetadata(optimizedBuffer);
-      await job.progress(70);
+      await screenshotQueue.updateProgress(id, 70);
 
       // 4. Upload to storage
       const imageUrl = await uploadToStorage(id, optimizedBuffer, format);
-      await job.progress(90);
+      await screenshotQueue.updateProgress(id, 90);
 
       // 5. Send callback
       const callbackPayload = {
@@ -77,7 +76,7 @@ class ScreenshotWorker {
       };
 
       await sendCallback(callbackUrl, callbackPayload);
-      await job.progress(100);
+      await screenshotQueue.updateProgress(id, 100);
 
       console.log(`✅ Job ${id} completed successfully`);
 

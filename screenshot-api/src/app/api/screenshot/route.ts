@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import { validateScreenshotRequest } from '@/lib/validation/schemas';
-import { createJob } from '@/lib/queue/screenshot-queue';
-import { checkRateLimit, getRateLimitInfo } from '@/lib/utils/rate-limiter';
+import { createJob } from '@/lib/queue/simple-queue';
+import { checkRateLimit, getRateLimitInfo } from '@/lib/utils/simple-rate-limiter';
 import { ScreenshotResponse } from '@/lib/types';
 
 export async function POST(request: NextRequest) {
