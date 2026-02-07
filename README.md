@@ -88,8 +88,8 @@ npm run dev
 ### 1. 저장소 클론
 
 \`\`\`bash
-git clone https://github.com/DeadfireKim/hello.git
-cd hello
+git clone https://github.com/DeadfireKim/WebScreenShot.git
+cd WebScreenShot
 \`\`\`
 
 ### 2. API 서버 설치 및 실행
