@@ -289,6 +289,8 @@ npm run dev
 
 ### 📝 상세 사용법
 
+---
+
 #### 1. POST /api/screenshot
 
 스크린샷 작업을 생성하고 비동기로 처리합니다.
@@ -304,10 +306,12 @@ npm run dev
 - `options.format` (string): 이미지 형식 - `png`, `jpeg`, `webp` (기본: png)
 - `options.quality` (number): 이미지 품질 (기본: 80, 범위: 1-100)
 
-**요청 예시:**
-\`\`\`bash
-curl -X POST http://localhost:3000/api/screenshot \\
-  -H "Content-Type: application/json" \\
+<details>
+<summary><b>📤 요청 예시</b></summary>
+
+```bash
+curl -X POST http://localhost:3000/api/screenshot \
+  -H "Content-Type: application/json" \
   -d '{
     "targetUrl": "https://example.com",
     "callbackUrl": "https://your-service.com/webhook",
@@ -318,10 +322,14 @@ curl -X POST http://localhost:3000/api/screenshot \\
       "quality": 80
     }
   }'
-\`\`\`
+```
 
-**응답 (202 Accepted):**
-\`\`\`json
+</details>
+
+<details>
+<summary><b>📥 응답 (202 Accepted)</b></summary>
+
+```json
 {
   "success": true,
   "jobId": "550e8400-e29b-41d4-a716-446655440000",
@@ -330,7 +338,11 @@ curl -X POST http://localhost:3000/api/screenshot \\
   "estimatedTime": "5-10 seconds",
   "statusUrl": "/api/screenshot/550e8400-e29b-41d4-a716-446655440000"
 }
-\`\`\`
+```
+
+</details>
+
+---
 
 #### 2. GET /api/screenshot/:jobId
 
@@ -339,13 +351,25 @@ curl -X POST http://localhost:3000/api/screenshot \\
 **Path 파라미터:**
 - `jobId` (string): 작업 ID (POST 요청에서 받은 ID)
 
-**요청 예시:**
-\`\`\`bash
-curl http://localhost:3000/api/screenshot/550e8400-e29b-41d4-a716-446655440000
-\`\`\`
+**상태 값:**
+- `pending`: 대기 중
+- `active`: 처리 중
+- `completed`: 완료
+- `failed`: 실패
 
-**응답 (완료 시):**
-\`\`\`json
+<details>
+<summary><b>📤 요청 예시</b></summary>
+
+```bash
+curl http://localhost:3000/api/screenshot/550e8400-e29b-41d4-a716-446655440000
+```
+
+</details>
+
+<details>
+<summary><b>📥 응답 (완료 시)</b></summary>
+
+```json
 {
   "jobId": "550e8400-e29b-41d4-a716-446655440000",
   "status": "completed",
@@ -360,39 +384,48 @@ curl http://localhost:3000/api/screenshot/550e8400-e29b-41d4-a716-446655440000
     "size": 524288
   }
 }
-\`\`\`
+```
 
-**상태 값:**
-- `pending`: 대기 중
-- `active`: 처리 중
-- `completed`: 완료
-- `failed`: 실패
+</details>
+
+---
 
 #### 3. GET /api/health
 
 API 서버의 상태를 확인합니다.
 
-**요청 예시:**
-\`\`\`bash
-curl http://localhost:3000/api/health
-\`\`\`
+<details>
+<summary><b>📤 요청 예시</b></summary>
 
-**응답:**
-\`\`\`json
+```bash
+curl http://localhost:3000/api/health
+```
+
+</details>
+
+<details>
+<summary><b>📥 응답</b></summary>
+
+```json
 {
   "status": "ok",
   "timestamp": "2026-02-07T10:00:00Z",
   "uptime": 3600
 }
-\`\`\`
+```
+
+</details>
+
+---
 
 ## 🪝 Webhook 콜백
 
-스크린샷이 완료되면 \`callbackUrl\`로 POST 요청이 전송됩니다:
+스크린샷이 완료되면 `callbackUrl`로 POST 요청이 전송됩니다.
 
-**성공 콜백:**
+<details>
+<summary><b>✅ 성공 콜백</b></summary>
 
-\`\`\`json
+```json
 {
   "jobId": "550e8400-e29b-41d4-a716-446655440000",
   "status": "completed",
@@ -406,11 +439,14 @@ curl http://localhost:3000/api/health
   },
   "completedAt": "2026-02-07T10:00:08Z"
 }
-\`\`\`
+```
 
-**실패 콜백:**
+</details>
 
-\`\`\`json
+<details>
+<summary><b>❌ 실패 콜백</b></summary>
+
+```json
 {
   "jobId": "550e8400-e29b-41d4-a716-446655440000",
   "status": "failed",
@@ -421,24 +457,32 @@ curl http://localhost:3000/api/health
   },
   "completedAt": "2026-02-07T10:00:30Z"
 }
-\`\`\`
+```
+
+</details>
+
+---
 
 ## 🔒 요청 제한
 
-- **제한**: IP당 분당 10회 요청
-- **윈도우**: 60초
-- **응답**: 429 Too Many Requests
+| 항목 | 값 |
+|------|-----|
+| **제한** | IP당 분당 10회 요청 |
+| **윈도우** | 60초 |
+| **초과 시 응답** | 429 Too Many Requests |
+
+---
 
 ## ⚠️ 에러 코드
 
-| 코드 | 설명 |
-|------|-------------|
-| \`VALIDATION_ERROR\` | 잘못된 요청 파라미터 |
-| \`RATE_LIMIT_EXCEEDED\` | 너무 많은 요청 |
-| \`JOB_NOT_FOUND\` | Job ID를 찾을 수 없음 |
-| \`TIMEOUT\` | 페이지 로딩 타임아웃 (30초) |
-| \`NAVIGATION_FAILED\` | URL로 이동할 수 없음 |
-| \`SCREENSHOT_FAILED\` | 스크린샷 캡처 실패 |
+| 코드 | 설명 | HTTP 상태 |
+|------|-------------|-----------|
+| `VALIDATION_ERROR` | 잘못된 요청 파라미터 | 400 |
+| `RATE_LIMIT_EXCEEDED` | 너무 많은 요청 | 429 |
+| `JOB_NOT_FOUND` | Job ID를 찾을 수 없음 | 404 |
+| `TIMEOUT` | 페이지 로딩 타임아웃 (30초) | 500 |
+| `NAVIGATION_FAILED` | URL로 이동할 수 없음 | 500 |
+| `SCREENSHOT_FAILED` | 스크린샷 캡처 실패 | 500 |
 
 ## 🎉 구현 상태
 
