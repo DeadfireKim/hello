@@ -190,8 +190,17 @@ class SimpleQueue extends EventEmitter {
   }
 }
 
-// Create singleton queue instance
-const screenshotQueue = new SimpleQueue('screenshot-jobs');
+// Declare global type for singleton queue
+declare global {
+  var __screenshotQueue: SimpleQueue | undefined;
+}
+
+// Create singleton queue instance (use global to ensure single instance across all modules)
+if (!global.__screenshotQueue) {
+  global.__screenshotQueue = new SimpleQueue('screenshot-jobs');
+}
+
+const screenshotQueue = global.__screenshotQueue;
 
 // Auto cleanup every 10 minutes
 setInterval(() => {

@@ -4,9 +4,28 @@ import { validateScreenshotRequest } from '@/lib/validation/schemas';
 import { createJob } from '@/lib/queue/simple-queue';
 import { checkRateLimit, getRateLimitInfo } from '@/lib/utils/simple-rate-limiter';
 import { ScreenshotResponse } from '@/lib/types';
+import ScreenshotWorker from '@/lib/worker/screenshot-worker';
+
+// Global worker instance
+declare global {
+  var screenshotWorker: ScreenshotWorker | undefined;
+}
+
+// Initialize worker on first request
+async function ensureWorkerInitialized() {
+  if (!global.screenshotWorker) {
+    console.log('🚀 Initializing Screenshot Worker on first request...');
+    global.screenshotWorker = new ScreenshotWorker();
+    await global.screenshotWorker.initialize();
+    console.log('✅ Screenshot Worker initialized');
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
+    // Ensure worker is initialized
+    await ensureWorkerInitialized();
+
     // Get client IP
     const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown';
 

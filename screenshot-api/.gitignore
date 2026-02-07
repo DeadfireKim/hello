@@ -45,3 +45,9 @@ next-env.d.ts
 
 # Bull Queue
 dump.rdb
+
+# Screenshots (local development storage)
+/public/screenshots/*.png
+/public/screenshots/*.jpg
+/public/screenshots/*.jpeg
+/public/screenshots/*.webp

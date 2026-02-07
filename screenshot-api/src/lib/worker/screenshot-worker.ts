@@ -138,7 +138,7 @@ class ScreenshotWorker {
       await page.goto(url, navigationOptions);
 
       // Wait a bit for dynamic content
-      await page.waitForTimeout(1000);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Take screenshot
       const fullPage = options?.fullPage !== false; // Default true
