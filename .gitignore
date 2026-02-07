@@ -43,3 +43,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# bkit plugin tracking files
+docs/.bkit-memory.json
+docs/.pdca-snapshots/

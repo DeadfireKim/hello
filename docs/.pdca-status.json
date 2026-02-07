@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-02-07T02:50:27.473Z",
+  "lastUpdated": "2026-02-07T03:14:35.450Z",
   "activeFeatures": [
     "website-screenshot",
     "screenshot-api",
@@ -13,7 +13,8 @@
     "config",
     "worker",
     "scripts",
-    "callback-dummy"
+    "callback-dummy",
+    "test-website"
   ],
   "primaryFeature": "website-screenshot",
   "features": {
@@ -53,9 +54,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-07T02:04:19.528Z",
-        "lastUpdated": "2026-02-07T02:42:48.925Z"
+        "lastUpdated": "2026-02-07T03:14:35.450Z"
       },
-      "lastFile": "/Users/tj/hello/screenshot-api/instrumentation.ts"
+      "lastFile": "/Users/tj/hello/screenshot-api/src/app/page.tsx"
     },
     "db": {
       "phase": "do",
@@ -186,6 +187,19 @@
         "lastUpdated": "2026-02-07T02:32:19.389Z"
       },
       "lastFile": "/Users/tj/hello/screenshot-api/src/app/api/callback-dummy/route.ts"
+    },
+    "test-website": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-07T03:14:28.827Z",
+        "lastUpdated": "2026-02-07T03:14:29.287Z"
+      },
+      "lastFile": "/Users/tj/hello/test-website/postcss.config.js"
     }
   },
   "pipeline": {
@@ -196,7 +210,7 @@
   "session": {
     "startedAt": "2026-02-06T05:52:39.462Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-02-07T02:50:27.473Z"
+    "lastActivity": "2026-02-07T03:14:35.450Z"
   },
   "history": [
     {
@@ -460,6 +474,30 @@
     {
       "timestamp": "2026-02-07T02:50:27.473Z",
       "feature": "worker",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:14:28.827Z",
+      "feature": "test-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:14:29.133Z",
+      "feature": "test-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:14:29.287Z",
+      "feature": "test-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:14:35.450Z",
+      "feature": "screenshot-api",
       "phase": "do",
       "action": "updated"
     }
