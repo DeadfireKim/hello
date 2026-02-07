@@ -71,11 +71,25 @@ brew services start redis
 
 ### 4. Run Development Server
 
+**Terminal 1: API Server**
+
 \`\`\`bash
 npm run dev
 \`\`\`
 
+**Terminal 2: Worker Process**
+
+\`\`\`bash
+npm run worker
+\`\`\`
+
 Visit [http://localhost:3000](http://localhost:3000)
+
+**Or run both together:**
+
+\`\`\`bash
+npm run start:all
+\`\`\`
 
 ## 📡 API Endpoints
 
@@ -216,14 +230,26 @@ When screenshot completes, a POST request is sent to your \`callbackUrl\`:
 | \`NAVIGATION_FAILED\` | Cannot navigate to URL |
 | \`SCREENSHOT_FAILED\` | Screenshot capture failed |
 
-## 🚧 Roadmap
+## 🎉 Implementation Status
 
-- [ ] Worker process implementation
-- [ ] Puppeteer screenshot capture
-- [ ] Sharp image optimization
-- [ ] S3/R2 storage integration
-- [ ] Callback webhook sender
-- [ ] Deployment to Railway/Render
+### Week 1: API + Queue ✅
+- [x] Next.js API Routes
+- [x] Bull Queue with Redis
+- [x] Request validation
+- [x] Rate limiting
+- [x] Job status tracking
+
+### Week 2: Worker + Storage ✅
+- [x] Puppeteer screenshot capture
+- [x] Sharp image optimization
+- [x] S3/R2 storage integration
+- [x] Webhook callback sender
+- [x] Worker process with graceful shutdown
+
+### Deployment 🚧
+- [ ] Deploy to Railway/Render
+- [ ] Configure production environment
+- [ ] Set up monitoring
 
 ## 📝 License
 
