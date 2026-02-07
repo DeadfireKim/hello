@@ -1,42 +1,42 @@
 # Screenshot API
 
-> Website Screenshot Service with Webhook Callback
+> Webhook 콜백을 지원하는 웹사이트 스크린샷 서비스
 
-A RESTful API service that captures full-page screenshots of websites and sends results via webhook callback. Built with Next.js, Puppeteer, and Sharp.
+Next.js, Puppeteer, Sharp로 구축된 RESTful API 서비스입니다. 웹사이트의 전체 페이지 스크린샷을 캡처하고 webhook 콜백으로 결과를 전달합니다.
 
-## 🚀 Features
+## 🚀 주요 기능
 
-- ✅ **Async Job Processing** - Non-blocking screenshot generation
-- ✅ **Webhook Callback** - Automatic result delivery
-- ✅ **Full Page Capture** - Includes content below the fold
-- ✅ **Rate Limiting** - 10 requests/minute per IP
-- ✅ **Job Status Tracking** - Query job progress
-- ✅ **Error Retry** - Automatic retry on failure (3 attempts)
+- ✅ **비동기 작업 처리** - 논블로킹 스크린샷 생성
+- ✅ **Webhook 콜백** - 자동 결과 전송
+- ✅ **전체 페이지 캡처** - 스크롤 아래 콘텐츠 포함
+- ✅ **요청 제한** - IP당 분당 10회 요청
+- ✅ **작업 상태 추적** - 작업 진행상황 조회
+- ✅ **에러 재시도** - 실패 시 자동 재시도 (3회)
 
-## 📦 Tech Stack
+## 📦 기술 스택
 
 - **API**: Next.js 15 API Routes
-- **Queue**: In-Memory Simple Queue (No Redis!)
+- **Queue**: In-Memory Simple Queue (Redis 불필요!)
 - **Screenshot**: Puppeteer (Headless Chrome)
 - **Image Processing**: Sharp
 - **Storage**: AWS S3 / Cloudflare R2
 
-### ✨ Simplified Architecture
-- ✅ **No Redis Required** - Uses in-memory queue
-- ✅ **Single Server** - API + Worker in one process
-- ✅ **Easy Setup** - Just Node.js needed
-- ⚠️ **Trade-off**: Jobs lost on server restart
+### ✨ 간소화된 아키텍처
+- ✅ **Redis 불필요** - 인메모리 큐 사용
+- ✅ **단일 서버** - API + Worker가 하나의 프로세스
+- ✅ **간편한 설정** - Node.js만 필요
+- ⚠️ **트레이드오프**: 서버 재시작 시 작업 손실
 
-## 🔧 Prerequisites
+## 🔧 사전 요구사항
 
 - Node.js 20+
-- AWS S3 or Cloudflare R2 account (for image storage)
+- AWS S3 또는 Cloudflare R2 계정 (이미지 저장용)
 
-**That's it!** No Redis, no additional services needed.
+**이게 전부입니다!** Redis나 추가 서비스가 필요하지 않습니다.
 
-## 📖 Installation
+## 📖 설치 방법
 
-### 1. Clone and Install
+### 1. 클론 및 설치
 
 \`\`\`bash
 git clone <repository-url>
@@ -44,15 +44,15 @@ cd screenshot-api
 npm install
 \`\`\`
 
-### 2. Environment Variables
+### 2. 환경 변수 설정
 
-Copy \`.env.example\` to \`.env.local\`:
+\`.env.example\`을 \`.env.local\`로 복사:
 
 \`\`\`bash
 cp .env.example .env.local
 \`\`\`
 
-Edit \`.env.local\`:
+\`.env.local\` 파일 수정:
 
 \`\`\`bash
 # Storage (Cloudflare R2 or AWS S3)
@@ -71,43 +71,43 @@ PORT=3000
 WORKER_CONCURRENCY=5
 \`\`\`
 
-> **💡 Development Tip**: For local testing without S3, leave the placeholder values. The service will automatically save screenshots to \`public/screenshots/\` directory.
+> **💡 개발 팁**: S3 없이 로컬에서 테스트하려면 플레이스홀더 값을 그대로 두세요. 서비스가 자동으로 \`public/screenshots/\` 디렉토리에 스크린샷을 저장합니다.
 
-### 3. Run the Service
+### 3. 서비스 실행
 
-The service supports two deployment modes:
+서비스는 두 가지 배포 모드를 지원합니다:
 
-#### 🟢 **Integrated Mode (Recommended for Development)**
+#### 🟢 **통합 모드 (개발 환경 권장)**
 
-API server and worker run in the same process. The worker automatically starts when the API receives its first screenshot request.
+API 서버와 워커가 동일한 프로세스에서 실행됩니다. API가 첫 번째 스크린샷 요청을 받으면 워커가 자동으로 시작됩니다.
 
 \`\`\`bash
 npm run dev
 \`\`\`
 
-Visit [http://localhost:3000](http://localhost:3000)
+[http://localhost:3000](http://localhost:3000) 접속
 
-**Advantages:**
-- ✅ Simple setup - single command
-- ✅ No configuration needed
-- ✅ Perfect for development and testing
-- ✅ Interactive test UI included
+**장점:**
+- ✅ 간단한 설정 - 단일 명령어
+- ✅ 설정 불필요
+- ✅ 개발 및 테스트에 최적
+- ✅ 인터랙티브 테스트 UI 포함
 
-**Trade-offs:**
-- ⚠️ Jobs lost on server restart
-- ⚠️ Cannot scale horizontally
+**트레이드오프:**
+- ⚠️ 서버 재시작 시 작업 손실
+- ⚠️ 수평 확장 불가
 
-#### 🔵 **Standalone Worker Mode (For Production/Distributed Setup)**
+#### 🔵 **독립 워커 모드 (프로덕션/분산 환경용)**
 
-Run the screenshot worker as a separate daemon process. Requires Redis for job queue communication.
+스크린샷 워커를 별도의 데몬 프로세스로 실행합니다. 작업 큐 통신을 위해 Redis가 필요합니다.
 
-**Prerequisites:**
-- Redis server running
-- Shared Redis connection between API and Worker
+**사전 요구사항:**
+- Redis 서버 실행 중
+- API와 Worker 간 공유 Redis 연결
 
-**Setup:**
+**설정 방법:**
 
-1. **Install Redis** (if not already installed):
+1. **Redis 설치** (미설치 시):
    \`\`\`bash
    # macOS
    brew install redis
@@ -121,74 +121,74 @@ Run the screenshot worker as a separate daemon process. Requires Redis for job q
    docker run -d -p 6379:6379 redis:alpine
    \`\`\`
 
-2. **Update \`.env.local\`** to use Redis:
+2. **\`.env.local\` 업데이트** - Redis 사용:
    \`\`\`bash
    REDIS_URL=redis://localhost:6379
    \`\`\`
 
-3. **Modify Queue Implementation**:
+3. **큐 구현 수정**:
 
-   Replace \`simple-queue.ts\` with Bull Queue + Redis implementation.
-   (See \`docs/02-design/features/website-screenshot.design.md\` for original design)
+   \`simple-queue.ts\`를 Bull Queue + Redis 구현으로 교체합니다.
+   (\`docs/02-design/features/website-screenshot.design.md\`에서 원본 설계 참고)
 
-4. **Run Services**:
+4. **서비스 실행**:
 
-   **Terminal 1: API Server**
+   **터미널 1: API 서버**
    \`\`\`bash
    npm run dev
    \`\`\`
 
-   **Terminal 2: Worker Daemon**
+   **터미널 2: 워커 데몬**
    \`\`\`bash
    npm run worker
    \`\`\`
 
-   Or run both together:
+   또는 함께 실행:
    \`\`\`bash
    npm run start:all
    \`\`\`
 
-**Advantages:**
-- ✅ Jobs persist across restarts (stored in Redis)
-- ✅ Horizontal scaling (multiple workers)
-- ✅ Worker can run on separate servers
-- ✅ Better for production workloads
+**장점:**
+- ✅ 재시작 시에도 작업 유지 (Redis에 저장)
+- ✅ 수평 확장 (여러 워커)
+- ✅ 워커를 별도 서버에서 실행 가능
+- ✅ 프로덕션 워크로드에 적합
 
-**When to use Standalone Mode:**
-- Production deployments
-- High-volume screenshot generation
-- Need for job persistence
-- Distributed architecture
+**독립 모드 사용 시기:**
+- 프로덕션 배포
+- 대량 스크린샷 생성
+- 작업 영속성 필요
+- 분산 아키텍처
 
-#### 🎯 Quick Comparison
+#### 🎯 빠른 비교
 
-| Feature | Integrated Mode | Standalone Mode |
+| 기능 | 통합 모드 | 독립 모드 |
 |---------|----------------|-----------------|
-| Setup Complexity | Simple (1 command) | Complex (Redis + multiple processes) |
-| Job Persistence | ❌ Lost on restart | ✅ Persists in Redis |
-| Horizontal Scaling | ❌ Single instance | ✅ Multiple workers |
-| Development | ✅ Recommended | ⚠️ Overkill |
-| Production | ⚠️ Limited scale | ✅ Recommended |
-| Dependencies | Node.js only | Node.js + Redis |
+| 설정 복잡도 | 간단 (1개 명령어) | 복잡 (Redis + 다중 프로세스) |
+| 작업 영속성 | ❌ 재시작 시 손실 | ✅ Redis에 저장 |
+| 수평 확장 | ❌ 단일 인스턴스 | ✅ 다중 워커 |
+| 개발 환경 | ✅ 권장 | ⚠️ 과도함 |
+| 프로덕션 | ⚠️ 제한적 규모 | ✅ 권장 |
+| 의존성 | Node.js만 | Node.js + Redis |
 
-## 📡 API Endpoints
+## 📡 API 엔드포인트
 
 ### POST /api/screenshot
 
-Create a screenshot job.
+스크린샷 작업을 생성합니다.
 
-**Request:**
+**요청:**
 
 \`\`\`bash
-curl -X POST http://localhost:3000/api/screenshot \
-  -H "Content-Type: application/json" \
+curl -X POST http://localhost:3000/api/screenshot \\
+  -H "Content-Type: application/json" \\
   -d '{
     "targetUrl": "https://example.com",
     "callbackUrl": "https://your-service.com/webhook"
   }'
 \`\`\`
 
-**Response (202 Accepted):**
+**응답 (202 Accepted):**
 
 \`\`\`json
 {
@@ -201,7 +201,7 @@ curl -X POST http://localhost:3000/api/screenshot \
 }
 \`\`\`
 
-**Optional Parameters:**
+**선택적 파라미터:**
 
 \`\`\`json
 {
@@ -221,15 +221,15 @@ curl -X POST http://localhost:3000/api/screenshot \
 
 ### GET /api/screenshot/:jobId
 
-Query job status.
+작업 상태를 조회합니다.
 
-**Request:**
+**요청:**
 
 \`\`\`bash
 curl http://localhost:3000/api/screenshot/550e8400-e29b-41d4-a716-446655440000
 \`\`\`
 
-**Response:**
+**응답:**
 
 \`\`\`json
 {
@@ -250,17 +250,17 @@ curl http://localhost:3000/api/screenshot/550e8400-e29b-41d4-a716-446655440000
 
 ### GET /api/health
 
-Health check endpoint.
+헬스 체크 엔드포인트입니다.
 
 \`\`\`bash
 curl http://localhost:3000/api/health
 \`\`\`
 
-## 🪝 Webhook Callback
+## 🪝 Webhook 콜백
 
-When screenshot completes, a POST request is sent to your \`callbackUrl\`:
+스크린샷이 완료되면 \`callbackUrl\`로 POST 요청이 전송됩니다:
 
-**Success Callback:**
+**성공 콜백:**
 
 \`\`\`json
 {
@@ -278,7 +278,7 @@ When screenshot completes, a POST request is sent to your \`callbackUrl\`:
 }
 \`\`\`
 
-**Failure Callback:**
+**실패 콜백:**
 
 \`\`\`json
 {
@@ -293,58 +293,58 @@ When screenshot completes, a POST request is sent to your \`callbackUrl\`:
 }
 \`\`\`
 
-## 🔒 Rate Limiting
+## 🔒 요청 제한
 
-- **Limit**: 10 requests per minute per IP
-- **Window**: 60 seconds
-- **Response**: 429 Too Many Requests
+- **제한**: IP당 분당 10회 요청
+- **윈도우**: 60초
+- **응답**: 429 Too Many Requests
 
-## ⚠️ Error Codes
+## ⚠️ 에러 코드
 
-| Code | Description |
+| 코드 | 설명 |
 |------|-------------|
-| \`VALIDATION_ERROR\` | Invalid request parameters |
-| \`RATE_LIMIT_EXCEEDED\` | Too many requests |
-| \`JOB_NOT_FOUND\` | Job ID not found |
-| \`TIMEOUT\` | Page loading timeout (30s) |
-| \`NAVIGATION_FAILED\` | Cannot navigate to URL |
-| \`SCREENSHOT_FAILED\` | Screenshot capture failed |
+| \`VALIDATION_ERROR\` | 잘못된 요청 파라미터 |
+| \`RATE_LIMIT_EXCEEDED\` | 너무 많은 요청 |
+| \`JOB_NOT_FOUND\` | Job ID를 찾을 수 없음 |
+| \`TIMEOUT\` | 페이지 로딩 타임아웃 (30초) |
+| \`NAVIGATION_FAILED\` | URL로 이동할 수 없음 |
+| \`SCREENSHOT_FAILED\` | 스크린샷 캡처 실패 |
 
-## 🎉 Implementation Status
+## 🎉 구현 상태
 
-### Core Features ✅
+### 핵심 기능 ✅
 - [x] Next.js 15 API Routes
-- [x] In-Memory Simple Queue (No Redis required)
-- [x] Request validation with Zod
-- [x] Rate limiting (10 req/min per IP)
-- [x] Job status tracking
-- [x] Puppeteer screenshot capture
-- [x] Sharp image optimization
-- [x] S3/R2 storage integration
-- [x] Local filesystem fallback (development)
-- [x] Webhook callback with retry
-- [x] Worker auto-initialization
-- [x] Interactive test UI
-- [x] Graceful error handling
+- [x] In-Memory Simple Queue (Redis 불필요)
+- [x] Zod를 사용한 요청 검증
+- [x] 요청 제한 (IP당 분당 10회)
+- [x] 작업 상태 추적
+- [x] Puppeteer 스크린샷 캡처
+- [x] Sharp 이미지 최적화
+- [x] S3/R2 스토리지 연동
+- [x] 로컬 파일시스템 대체 (개발 환경)
+- [x] 재시도 기능이 있는 Webhook 콜백
+- [x] 워커 자동 초기화
+- [x] 인터랙티브 테스트 UI
+- [x] 우아한 에러 처리
 
-### Optional Enhancements
-- [ ] Redis-based queue for production
-- [ ] Database persistence (PostgreSQL)
-- [ ] Horizontal worker scaling
-- [ ] Deploy to Railway/Render
-- [ ] Configure production environment
-- [ ] Set up monitoring
-- [ ] Job priority queue
-- [ ] Screenshot caching
+### 선택적 개선사항
+- [ ] 프로덕션용 Redis 기반 큐
+- [ ] 데이터베이스 영속성 (PostgreSQL)
+- [ ] 워커 수평 확장
+- [ ] Railway/Render 배포
+- [ ] 프로덕션 환경 설정
+- [ ] 모니터링 설정
+- [ ] 작업 우선순위 큐
+- [ ] 스크린샷 캐싱
 
-## 📝 License
+## 📝 라이선스
 
 MIT
 
-## 🤝 Contributing
+## 🤝 기여하기
 
-Contributions welcome! Please open an issue or PR.
+기여를 환영합니다! 이슈나 PR을 열어주세요.
 
 ---
 
-**Built with [Claude Code](https://claude.com/claude-code) 🤖**
+**[Claude Code](https://claude.com/claude-code)로 제작 🤖**
