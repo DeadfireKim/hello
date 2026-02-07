@@ -2,7 +2,7 @@
 
 > Website Screenshot Service with Webhook Callback
 
-A RESTful API service that captures full-page screenshots of websites and sends results via webhook callback. Built with Next.js, Bull Queue, Puppeteer, and Redis.
+A RESTful API service that captures full-page screenshots of websites and sends results via webhook callback. Built with Next.js, Puppeteer, and Sharp.
 
 ## 🚀 Features
 
@@ -55,38 +55,121 @@ cp .env.example .env.local
 Edit \`.env.local\`:
 
 \`\`\`bash
-# Redis
-REDIS_URL=redis://localhost:6379
-
 # Storage (Cloudflare R2 or AWS S3)
 S3_BUCKET=your-bucket-name
 S3_REGION=auto
 S3_ACCESS_KEY_ID=your_access_key
 S3_SECRET_ACCESS_KEY=your_secret_key
 S3_ENDPOINT=https://your-account.r2.cloudflarestorage.com
+
+# Application
+NEXT_PUBLIC_API_URL=http://localhost:3000
+NODE_ENV=development
+PORT=3000
+
+# Worker
+WORKER_CONCURRENCY=5
 \`\`\`
 
-### 3. Run Development Server
+> **💡 Development Tip**: For local testing without S3, leave the placeholder values. The service will automatically save screenshots to \`public/screenshots/\` directory.
 
-**Terminal 1: API Server**
+### 3. Run the Service
+
+The service supports two deployment modes:
+
+#### 🟢 **Integrated Mode (Recommended for Development)**
+
+API server and worker run in the same process. The worker automatically starts when the API receives its first screenshot request.
 
 \`\`\`bash
 npm run dev
 \`\`\`
 
-**Terminal 2: Worker Process**
-
-\`\`\`bash
-npm run worker
-\`\`\`
-
 Visit [http://localhost:3000](http://localhost:3000)
 
-**Or run both together:**
+**Advantages:**
+- ✅ Simple setup - single command
+- ✅ No configuration needed
+- ✅ Perfect for development and testing
+- ✅ Interactive test UI included
 
-\`\`\`bash
-npm run start:all
-\`\`\`
+**Trade-offs:**
+- ⚠️ Jobs lost on server restart
+- ⚠️ Cannot scale horizontally
+
+#### 🔵 **Standalone Worker Mode (For Production/Distributed Setup)**
+
+Run the screenshot worker as a separate daemon process. Requires Redis for job queue communication.
+
+**Prerequisites:**
+- Redis server running
+- Shared Redis connection between API and Worker
+
+**Setup:**
+
+1. **Install Redis** (if not already installed):
+   \`\`\`bash
+   # macOS
+   brew install redis
+   brew services start redis
+
+   # Ubuntu/Debian
+   sudo apt-get install redis-server
+   sudo systemctl start redis
+
+   # Docker
+   docker run -d -p 6379:6379 redis:alpine
+   \`\`\`
+
+2. **Update \`.env.local\`** to use Redis:
+   \`\`\`bash
+   REDIS_URL=redis://localhost:6379
+   \`\`\`
+
+3. **Modify Queue Implementation**:
+
+   Replace \`simple-queue.ts\` with Bull Queue + Redis implementation.
+   (See \`docs/02-design/features/website-screenshot.design.md\` for original design)
+
+4. **Run Services**:
+
+   **Terminal 1: API Server**
+   \`\`\`bash
+   npm run dev
+   \`\`\`
+
+   **Terminal 2: Worker Daemon**
+   \`\`\`bash
+   npm run worker
+   \`\`\`
+
+   Or run both together:
+   \`\`\`bash
+   npm run start:all
+   \`\`\`
+
+**Advantages:**
+- ✅ Jobs persist across restarts (stored in Redis)
+- ✅ Horizontal scaling (multiple workers)
+- ✅ Worker can run on separate servers
+- ✅ Better for production workloads
+
+**When to use Standalone Mode:**
+- Production deployments
+- High-volume screenshot generation
+- Need for job persistence
+- Distributed architecture
+
+#### 🎯 Quick Comparison
+
+| Feature | Integrated Mode | Standalone Mode |
+|---------|----------------|-----------------|
+| Setup Complexity | Simple (1 command) | Complex (Redis + multiple processes) |
+| Job Persistence | ❌ Lost on restart | ✅ Persists in Redis |
+| Horizontal Scaling | ❌ Single instance | ✅ Multiple workers |
+| Development | ✅ Recommended | ⚠️ Overkill |
+| Production | ⚠️ Limited scale | ✅ Recommended |
+| Dependencies | Node.js only | Node.js + Redis |
 
 ## 📡 API Endpoints
 
@@ -229,24 +312,30 @@ When screenshot completes, a POST request is sent to your \`callbackUrl\`:
 
 ## 🎉 Implementation Status
 
-### Week 1: API + Queue ✅
-- [x] Next.js API Routes
-- [x] Bull Queue with Redis
-- [x] Request validation
-- [x] Rate limiting
+### Core Features ✅
+- [x] Next.js 15 API Routes
+- [x] In-Memory Simple Queue (No Redis required)
+- [x] Request validation with Zod
+- [x] Rate limiting (10 req/min per IP)
 - [x] Job status tracking
-
-### Week 2: Worker + Storage ✅
 - [x] Puppeteer screenshot capture
 - [x] Sharp image optimization
 - [x] S3/R2 storage integration
-- [x] Webhook callback sender
-- [x] Worker process with graceful shutdown
+- [x] Local filesystem fallback (development)
+- [x] Webhook callback with retry
+- [x] Worker auto-initialization
+- [x] Interactive test UI
+- [x] Graceful error handling
 
-### Deployment 🚧
+### Optional Enhancements
+- [ ] Redis-based queue for production
+- [ ] Database persistence (PostgreSQL)
+- [ ] Horizontal worker scaling
 - [ ] Deploy to Railway/Render
 - [ ] Configure production environment
 - [ ] Set up monitoring
+- [ ] Job priority queue
+- [ ] Screenshot caching
 
 ## 📝 License
 
