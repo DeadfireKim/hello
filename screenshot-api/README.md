@@ -19,7 +19,7 @@ Next.js, Puppeteer, Sharp로 구축된 RESTful API 서비스입니다. 웹사이
 - **Queue**: In-Memory Simple Queue (Redis 불필요!)
 - **Screenshot**: Puppeteer (Headless Chrome)
 - **Image Processing**: Sharp
-- **Storage**: AWS S3 / Cloudflare R2
+- **Storage**: 로컬 파일시스템 (개발) / AWS S3 / Cloudflare R2 (프로덕션)
 
 ### ✨ 간소화된 아키텍처
 - ✅ **Redis 불필요** - 인메모리 큐 사용
@@ -30,9 +30,15 @@ Next.js, Puppeteer, Sharp로 구축된 RESTful API 서비스입니다. 웹사이
 ## 🔧 사전 요구사항
 
 - Node.js 20+
-- AWS S3 또는 Cloudflare R2 계정 (이미지 저장용)
 
-**이게 전부입니다!** Redis나 추가 서비스가 필요하지 않습니다.
+**이게 전부입니다!**
+
+개발 환경에서는 스크린샷이 자동으로 로컬 디렉토리(`public/screenshots/`)에 저장됩니다.
+
+### 선택 사항 (프로덕션 배포 시)
+
+- AWS S3 또는 Cloudflare R2 계정 - 클라우드 스토리지에 이미지 저장
+- Redis 서버 - 독립 워커 모드 사용 시 필요
 
 ## 📖 설치 방법
 
@@ -52,10 +58,15 @@ npm install
 cp .env.example .env.local
 \`\`\`
 
-\`.env.local\` 파일 수정:
+**개발 환경에서는 기본 설정 그대로 사용하면 됩니다!**
+별도 수정 없이 바로 실행 가능하며, 스크린샷은 \`public/screenshots/\` 디렉토리에 저장됩니다.
+
+#### 프로덕션 환경 설정 (선택 사항)
+
+클라우드 스토리지를 사용하려면 \`.env.local\` 파일을 수정하세요:
 
 \`\`\`bash
-# Storage (Cloudflare R2 or AWS S3)
+# Storage (Cloudflare R2 or AWS S3) - 프로덕션용
 S3_BUCKET=your-bucket-name
 S3_REGION=auto
 S3_ACCESS_KEY_ID=your_access_key
@@ -71,7 +82,9 @@ PORT=3000
 WORKER_CONCURRENCY=5
 \`\`\`
 
-> **💡 개발 팁**: S3 없이 로컬에서 테스트하려면 플레이스홀더 값을 그대로 두세요. 서비스가 자동으로 \`public/screenshots/\` 디렉토리에 스크린샷을 저장합니다.
+> **📌 저장 위치 자동 선택**:
+> - **개발 모드** (S3 설정 없음): \`public/screenshots/\` 디렉토리에 로컬 저장
+> - **프로덕션 모드** (S3 설정 있음): S3/R2 클라우드 스토리지에 저장
 
 ### 3. 서비스 실행
 
@@ -170,6 +183,37 @@ npm run dev
 | 개발 환경 | ✅ 권장 | ⚠️ 과도함 |
 | 프로덕션 | ⚠️ 제한적 규모 | ✅ 권장 |
 | 의존성 | Node.js만 | Node.js + Redis |
+
+## 💾 스토리지 설정
+
+스크린샷 이미지는 자동으로 적절한 저장소에 저장됩니다:
+
+### 로컬 파일시스템 (기본값)
+
+**조건**: S3 자격증명이 설정되지 않았거나 개발 모드일 때
+
+- **저장 위치**: \`public/screenshots/\`
+- **URL 형식**: \`http://localhost:3000/screenshots/[jobId].png\`
+- **장점**:
+  - ✅ 즉시 사용 가능 (설정 불필요)
+  - ✅ 빠른 개발 및 테스트
+  - ✅ 외부 의존성 없음
+- **단점**:
+  - ⚠️ 서버 재시작 시에도 유지되지만 서버 디스크 공간 사용
+  - ⚠️ 다중 서버 환경에서 공유 불가
+
+### 클라우드 스토리지 (프로덕션)
+
+**조건**: S3 자격증명이 올바르게 설정되었을 때
+
+- **지원 서비스**: AWS S3, Cloudflare R2
+- **URL 형식**: Signed URL (24시간 유효)
+- **장점**:
+  - ✅ 무제한 저장 공간
+  - ✅ CDN 연동 가능
+  - ✅ 다중 서버 환경에서 공유
+  - ✅ 자동 백업 및 복제
+- **설정 방법**: 위의 "프로덕션 환경 설정" 참고
 
 ## 📡 API 엔드포인트
 
