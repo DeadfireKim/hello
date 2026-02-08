@@ -5,6 +5,7 @@
 
 import { ScreenshotJobData, JobResult } from '@/lib/types';
 import { EventEmitter } from 'events';
+import { WORKER_CONFIG } from '@/lib/config/app-config';
 
 interface Job {
   id: string;
@@ -42,7 +43,7 @@ class SimpleQueue extends EventEmitter {
       status: 'pending',
       progress: 0,
       attempts: 0,
-      maxAttempts: 3,
+      maxAttempts: WORKER_CONFIG.maxRetries,
       createdAt: Date.now(),
     };
 
@@ -100,8 +101,9 @@ class SimpleQueue extends EventEmitter {
       job.attempts++;
 
       if (job.attempts < job.maxAttempts) {
-        // Retry with exponential backoff
-        const delay = Math.pow(2, job.attempts) * 1000; // 2s, 4s, 8s
+        // Retry with configured delays
+        const delayIndex = Math.min(job.attempts - 1, WORKER_CONFIG.retryDelays.length - 1);
+        const delay = WORKER_CONFIG.retryDelays[delayIndex];
         console.log(`⚠️ Job ${jobId} failed, retrying in ${delay}ms (attempt ${job.attempts}/${job.maxAttempts})`);
 
         setTimeout(() => {
@@ -172,8 +174,8 @@ class SimpleQueue extends EventEmitter {
     console.log('👋 Queue closed');
   }
 
-  // Clean up old jobs (older than 1 hour)
-  cleanup(maxAge: number = 3600000) {
+  // Clean up old jobs
+  cleanup(maxAge: number = WORKER_CONFIG.jobCleanupMaxAge) {
     const now = Date.now();
     let cleaned = 0;
 
@@ -202,10 +204,10 @@ if (!global.__screenshotQueue) {
 
 const screenshotQueue = global.__screenshotQueue;
 
-// Auto cleanup every 10 minutes
+// Auto cleanup periodically
 setInterval(() => {
   screenshotQueue.cleanup();
-}, 600000);
+}, WORKER_CONFIG.jobCleanupIntervalMs);
 
 // Export functions for API compatibility
 export async function createJob(data: ScreenshotJobData) {

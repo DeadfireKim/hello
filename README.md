@@ -122,36 +122,73 @@ npm run dev
 ### 3️⃣ 환경 변수 설정 (선택사항)
 
 <details>
-<summary><b>⚙️ 프로덕션 환경 설정</b></summary>
+<summary><b>⚙️ 환경 설정 커스터마이징</b></summary>
 
-`.env.example`을 `.env.local`로 복사:
+모든 주요 설정값은 환경 변수로 변경 가능합니다.
+
+**1. 설정 파일 복사:**
 
 ```bash
 cd screenshot-api
 cp .env.example .env.local
 ```
 
-**클라우드 스토리지 설정 (S3/R2):**
+**2. 주요 설정 항목:**
 
+#### 🔧 서버 설정
 ```bash
-# Storage (Cloudflare R2 or AWS S3)
-S3_BUCKET=your-bucket-name
-S3_REGION=auto
+PORT=3000                              # API 서버 포트
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
+
+#### ⏱️ Rate Limiting
+```bash
+RATE_LIMIT_MAX_REQUESTS=10             # IP당 최대 요청 수
+RATE_LIMIT_WINDOW_MS=60000             # 제한 윈도우 (60초)
+```
+
+#### 👷 Worker & Queue
+```bash
+WORKER_CONCURRENCY=5                   # 동시 처리 작업 수
+WORKER_MAX_RETRIES=3                   # 작업 재시도 횟수
+JOB_CLEANUP_MAX_AGE_MS=3600000         # 작업 정리 기준 (1시간)
+```
+
+#### 📸 Screenshot
+```bash
+SCREENSHOT_NAVIGATION_TIMEOUT_MS=30000 # 페이지 로딩 타임아웃 (30초)
+SCREENSHOT_DEFAULT_WIDTH=1920          # 기본 뷰포트 너비
+SCREENSHOT_DEFAULT_HEIGHT=1080         # 기본 뷰포트 높이
+SCREENSHOT_WAIT_AFTER_LOAD_MS=1000     # 스크린샷 전 대기 시간 (1초)
+SCREENSHOT_DEFAULT_FORMAT=png          # 기본 이미지 형식
+SCREENSHOT_DEFAULT_QUALITY=80          # 기본 이미지 품질 (1-100)
+```
+
+#### 🪝 Webhook Callback
+```bash
+CALLBACK_MAX_RETRIES=3                 # Webhook 재시도 횟수
+CALLBACK_RETRY_DELAY_1_MS=60000        # 1차 재시도 지연 (1분)
+CALLBACK_RETRY_DELAY_2_MS=300000       # 2차 재시도 지연 (5분)
+CALLBACK_RETRY_DELAY_3_MS=900000       # 3차 재시도 지연 (15분)
+CALLBACK_TIMEOUT_MS=10000              # Webhook 타임아웃 (10초)
+```
+
+#### 💾 Storage (S3/R2)
+```bash
+STORAGE_LOCAL_DIR=public/screenshots   # 로컬 저장 디렉토리
+S3_BUCKET=your-bucket-name             # S3 Bucket 이름
+S3_REGION=auto                         # S3 Region
 S3_ACCESS_KEY_ID=your_access_key
 S3_SECRET_ACCESS_KEY=your_secret_key
 S3_ENDPOINT=https://your-account.r2.cloudflarestorage.com
-
-# Application
-NEXT_PUBLIC_API_URL=http://localhost:3000
-PORT=3000
-
-# Worker
-WORKER_CONCURRENCY=5
+S3_SIGNED_URL_EXPIRY=86400             # Signed URL 만료 (24시간)
 ```
 
-**📌 저장 위치 자동 선택:**
-- **개발 모드**: `public/screenshots/` (로컬)
-- **프로덕션 모드**: S3/R2 (클라우드)
+**💡 설정 파일 위치:**
+- 소스 코드: `screenshot-api/src/lib/config/app-config.ts`
+- 환경 변수: `screenshot-api/.env.local`
+
+전체 설정 목록은 `.env.example` 파일을 참고하세요.
 
 </details>
 

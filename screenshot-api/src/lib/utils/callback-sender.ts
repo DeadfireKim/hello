@@ -1,7 +1,5 @@
 import { CallbackPayload } from '@/lib/types';
-
-const MAX_RETRIES = 3;
-const RETRY_DELAYS = [60000, 300000, 900000]; // 1min, 5min, 15min
+import { CALLBACK_CONFIG } from '@/lib/config/app-config';
 
 export async function sendCallback(
   callbackUrl: string,
@@ -13,10 +11,10 @@ export async function sendCallback(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'User-Agent': 'Screenshot-API/1.0',
+        'User-Agent': CALLBACK_CONFIG.userAgent,
       },
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(10000), // 10s timeout
+      signal: AbortSignal.timeout(CALLBACK_CONFIG.timeout),
     });
 
     if (response.ok) {
@@ -25,21 +23,21 @@ export async function sendCallback(
     }
 
     // Retry on 5xx errors
-    if (response.status >= 500 && attempt < MAX_RETRIES - 1) {
+    if (response.status >= 500 && attempt < CALLBACK_CONFIG.maxRetries - 1) {
       console.warn(
-        `⚠️ Callback failed (${response.status}), retrying in ${RETRY_DELAYS[attempt] / 1000}s...`
+        `⚠️ Callback failed (${response.status}), retrying in ${CALLBACK_CONFIG.retryDelays[attempt] / 1000}s...`
       );
-      await sleep(RETRY_DELAYS[attempt]);
+      await sleep(CALLBACK_CONFIG.retryDelays[attempt]);
       return sendCallback(callbackUrl, payload, attempt + 1);
     }
 
     throw new Error(`Callback failed with status ${response.status}`);
   } catch (error) {
-    console.error(`❌ Callback error (attempt ${attempt + 1}/${MAX_RETRIES}):`, error);
+    console.error(`❌ Callback error (attempt ${attempt + 1}/${CALLBACK_CONFIG.maxRetries}):`, error);
 
     // Retry on network errors
-    if (attempt < MAX_RETRIES - 1) {
-      await sleep(RETRY_DELAYS[attempt]);
+    if (attempt < CALLBACK_CONFIG.maxRetries - 1) {
+      await sleep(CALLBACK_CONFIG.retryDelays[attempt]);
       return sendCallback(callbackUrl, payload, attempt + 1);
     }
 

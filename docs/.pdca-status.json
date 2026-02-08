@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-02-07T03:24:27.688Z",
+  "lastUpdated": "2026-02-07T03:45:49.650Z",
   "activeFeatures": [
     "website-screenshot",
     "screenshot-api",
@@ -56,9 +56,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-07T02:04:19.528Z",
-        "lastUpdated": "2026-02-07T03:20:14.220Z"
+        "lastUpdated": "2026-02-07T03:45:00.569Z"
       },
-      "lastFile": "/Users/tj/hello/screenshot-api/jest.setup.js"
+      "lastFile": "/Users/tj/hello/screenshot-api/src/lib/utils/callback-sender.ts"
     },
     "db": {
       "phase": "do",
@@ -95,9 +95,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-07T02:05:28.017Z",
-        "lastUpdated": "2026-02-07T03:21:29.506Z"
+        "lastUpdated": "2026-02-07T03:45:15.836Z"
       },
-      "lastFile": "/Users/tj/hello/screenshot-api/src/__tests__/queue/simple-queue.test.ts"
+      "lastFile": "/Users/tj/hello/screenshot-api/src/lib/queue/simple-queue.ts"
     },
     "screenshot": {
       "phase": "do",
@@ -147,9 +147,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-07T02:09:48.995Z",
-        "lastUpdated": "2026-02-07T02:09:49.162Z"
+        "lastUpdated": "2026-02-07T03:45:24.371Z"
       },
-      "lastFile": "/Users/tj/hello/screenshot-api/src/lib/config/s3.ts"
+      "lastFile": "/Users/tj/hello/screenshot-api/src/lib/config/puppeteer.ts"
     },
     "worker": {
       "phase": "do",
@@ -160,9 +160,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-07T02:09:49.316Z",
-        "lastUpdated": "2026-02-07T02:50:27.473Z"
+        "lastUpdated": "2026-02-07T03:45:49.650Z"
       },
-      "lastFile": "/Users/tj/hello/screenshot-api/src/lib/worker/storage-uploader.ts"
+      "lastFile": "/Users/tj/hello/screenshot-api/src/lib/worker/screenshot-worker.ts"
     },
     "scripts": {
       "phase": "do",
@@ -238,7 +238,7 @@
   "session": {
     "startedAt": "2026-02-06T05:52:39.462Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-02-07T03:24:27.688Z"
+    "lastActivity": "2026-02-07T03:45:49.650Z"
   },
   "history": [
     {
@@ -586,6 +586,120 @@
     {
       "timestamp": "2026-02-07T03:24:27.688Z",
       "feature": "__tests__",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:44:29.558Z",
+      "feature": "config",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:44:47.311Z",
+      "feature": "screenshot-api",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:44:47.395Z",
+      "feature": "screenshot-api",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:44:47.479Z",
+      "feature": "screenshot-api",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:45:00.399Z",
+      "feature": "screenshot-api",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:45:00.483Z",
+      "feature": "screenshot-api",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:45:00.569Z",
+      "feature": "screenshot-api",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:45:15.420Z",
+      "feature": "queue",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:45:15.511Z",
+      "feature": "queue",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:45:15.680Z",
+      "feature": "queue",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:45:15.759Z",
+      "feature": "queue",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:45:15.836Z",
+      "feature": "queue",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:45:24.371Z",
+      "feature": "config",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:45:39.966Z",
+      "feature": "worker",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:45:40.053Z",
+      "feature": "worker",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:45:40.135Z",
+      "feature": "worker",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:45:49.451Z",
+      "feature": "worker",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:45:49.561Z",
+      "feature": "worker",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-07T03:45:49.650Z",
+      "feature": "worker",
       "phase": "do",
       "action": "updated"
     }

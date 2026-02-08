@@ -3,6 +3,8 @@
  * Replaces Redis-based rate limiting
  */
 
+import { RATE_LIMIT_CONFIG } from '@/lib/config/app-config';
+
 interface RateLimitRecord {
   count: number;
   resetAt: number;
@@ -10,10 +12,7 @@ interface RateLimitRecord {
 
 const rateLimitStore = new Map<string, RateLimitRecord>();
 
-const RATE_LIMIT_WINDOW = 60000; // 60 seconds
-const MAX_REQUESTS = 10; // 10 requests per minute per IP
-
-// Clean up expired records every 5 minutes
+// Clean up expired records periodically
 setInterval(() => {
   const now = Date.now();
   let cleaned = 0;
@@ -28,7 +27,7 @@ setInterval(() => {
   if (cleaned > 0) {
     console.log(`🧹 Cleaned up ${cleaned} expired rate limit records`);
   }
-}, 300000);
+}, RATE_LIMIT_CONFIG.cleanupIntervalMs);
 
 export async function checkRateLimit(ip: string): Promise<boolean> {
   const key = `ratelimit:${ip}`;
@@ -40,7 +39,7 @@ export async function checkRateLimit(ip: string): Promise<boolean> {
   if (!record || now > record.resetAt) {
     record = {
       count: 1,
-      resetAt: now + RATE_LIMIT_WINDOW,
+      resetAt: now + RATE_LIMIT_CONFIG.windowMs,
     };
     rateLimitStore.set(key, record);
     return true;
@@ -50,7 +49,7 @@ export async function checkRateLimit(ip: string): Promise<boolean> {
   record.count++;
 
   // Check if exceeded
-  return record.count <= MAX_REQUESTS;
+  return record.count <= RATE_LIMIT_CONFIG.maxRequests;
 }
 
 export async function getRateLimitInfo(ip: string) {
@@ -62,9 +61,9 @@ export async function getRateLimitInfo(ip: string) {
   if (!record || now > record.resetAt) {
     return {
       count: 0,
-      limit: MAX_REQUESTS,
-      remaining: MAX_REQUESTS,
-      resetIn: Math.floor(RATE_LIMIT_WINDOW / 1000),
+      limit: RATE_LIMIT_CONFIG.maxRequests,
+      remaining: RATE_LIMIT_CONFIG.maxRequests,
+      resetIn: Math.floor(RATE_LIMIT_CONFIG.windowMs / 1000),
     };
   }
 
@@ -72,8 +71,8 @@ export async function getRateLimitInfo(ip: string) {
 
   return {
     count: record.count,
-    limit: MAX_REQUESTS,
-    remaining: Math.max(0, MAX_REQUESTS - record.count),
+    limit: RATE_LIMIT_CONFIG.maxRequests,
+    remaining: Math.max(0, RATE_LIMIT_CONFIG.maxRequests - record.count),
     resetIn,
   };
 }

@@ -5,6 +5,7 @@ import { puppeteerConfig, navigationOptions } from '@/lib/config/puppeteer';
 import { optimizeImage, getImageMetadata } from './image-optimizer';
 import { uploadToStorage } from './storage-uploader';
 import { sendCallback } from '@/lib/utils/callback-sender';
+import { WORKER_CONFIG, SCREENSHOT_CONFIG } from '@/lib/config/app-config';
 
 class ScreenshotWorker {
   private browser: Browser | null = null;
@@ -19,9 +20,8 @@ class ScreenshotWorker {
       console.log('✅ Puppeteer browser launched');
 
       // Process jobs with concurrency
-      const concurrency = parseInt(process.env.WORKER_CONCURRENCY || '5', 10);
-      screenshotQueue.process(concurrency, this.processJob.bind(this));
-      console.log(`✅ Worker processing jobs (concurrency: ${concurrency})`);
+      screenshotQueue.process(WORKER_CONFIG.concurrency, this.processJob.bind(this));
+      console.log(`✅ Worker processing jobs (concurrency: ${WORKER_CONFIG.concurrency})`);
 
       // Graceful shutdown
       process.on('SIGTERM', () => this.shutdown());
@@ -123,8 +123,8 @@ class ScreenshotWorker {
 
       // Set viewport
       const viewport = {
-        width: options?.viewport?.width || 1920,
-        height: options?.viewport?.height || 1080,
+        width: options?.viewport?.width || SCREENSHOT_CONFIG.defaultViewportWidth,
+        height: options?.viewport?.height || SCREENSHOT_CONFIG.defaultViewportHeight,
       };
       await page.setViewport(viewport);
 
@@ -138,10 +138,10 @@ class ScreenshotWorker {
       await page.goto(url, navigationOptions);
 
       // Wait a bit for dynamic content
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, SCREENSHOT_CONFIG.waitAfterLoad));
 
       // Take screenshot
-      const fullPage = options?.fullPage !== false; // Default true
+      const fullPage = options?.fullPage ?? SCREENSHOT_CONFIG.defaultFullPage;
       const screenshot = await page.screenshot({
         fullPage,
         type: 'png',
@@ -151,7 +151,7 @@ class ScreenshotWorker {
     } catch (error) {
       if (error instanceof Error) {
         if (error.message.includes('timeout')) {
-          throw new Error('TIMEOUT: Page loading timeout after 30 seconds');
+          throw new Error(`TIMEOUT: Page loading timeout after ${SCREENSHOT_CONFIG.navigationTimeout / 1000} seconds`);
         }
         if (error.message.includes('net::ERR')) {
           throw new Error('NAVIGATION_FAILED: Cannot navigate to URL');

@@ -1,4 +1,5 @@
 import { PuppeteerLaunchOptions } from 'puppeteer';
+import { SCREENSHOT_CONFIG } from './app-config';
 
 export const puppeteerConfig: PuppeteerLaunchOptions = {
   headless: true,
@@ -13,12 +14,12 @@ export const puppeteerConfig: PuppeteerLaunchOptions = {
   ],
   // Default viewport
   defaultViewport: {
-    width: 1920,
-    height: 1080,
+    width: SCREENSHOT_CONFIG.defaultViewportWidth,
+    height: SCREENSHOT_CONFIG.defaultViewportHeight,
   },
 };
 
 export const navigationOptions = {
   waitUntil: 'networkidle2' as const,
-  timeout: 30000, // 30 seconds
+  timeout: SCREENSHOT_CONFIG.navigationTimeout,
 };
